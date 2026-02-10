@@ -18,8 +18,5 @@
     "noUncheckedSideEffectImports": true,
     "types": ["vite/client"]
   },
-  "include": [
-    "src",
-    "src/css-modules.d.ts" // <--- include the CSS declaration file explicitly
-  ]
+  "include": ["src", "src/css-modules.d.ts"]
 }
