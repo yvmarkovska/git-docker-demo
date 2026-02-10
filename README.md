@@ -61,6 +61,11 @@ Automated checks run on every pull request:
 
 ## 📚 Resources
 
+### Repositories with good practices
+
+https://github.com/VGVentures/news_toolkit
+https://github.com/facebook/react
+
 ### Current Setup
 
 - [Husky](https://typicode.github.io/husky/)
