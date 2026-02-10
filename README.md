@@ -18,7 +18,7 @@ Demo repository for Git best practices, Docker fundamentals, and modern developm
 ##### Repositories with good practices
 
 - ** https://github.com/facebook/react **
-- ** https://github.com/Alliedium/awesome-github-actions?utm_source=chatgpt.com **
+- ** https://github.com/Alliedium/awesome-github-actions **
 - ** https://github.com/VGVentures/news_toolkit **
 
 ##### Repo contains:
