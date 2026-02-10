@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap');
+
 *,
 *::before,
 *::after {
@@ -7,27 +9,30 @@
 }
 
 :root {
-  --bg-primary: #fbfbfd;
-  --bg-card: rgba(255, 255, 255, 0.8);
-  --border-card: rgba(0, 0, 0, 0.06);
-  --text-primary: #1d1d1f;
-  --text-secondary: #86868b;
-  --accent: #0071e3;
-  --accent-hover: #0077ed;
-  --gradient-start: #2997ff;
-  --gradient-end: #af52de;
+  --bg-primary: #f5efe6;
+  --bg-card: rgba(255, 250, 243, 0.7);
+  --border-card: rgba(180, 156, 130, 0.2);
+  --text-primary: #3b322a;
+  --text-secondary: #8c7e72;
+  --accent-terracotta: #c67c5b;
+  --accent-sage: #8a9a7b;
+  --accent-sand: #d4b896;
+  --accent-rust: #a0522d;
+  --gradient-start: #c67c5b;
+  --gradient-end: #8a9a7b;
 }
 
 body {
   font-family:
-    -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text',
-    'Helvetica Neue', Helvetica, Arial, sans-serif;
+    'DM Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
   background: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
