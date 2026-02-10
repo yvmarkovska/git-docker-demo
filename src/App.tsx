@@ -1,12 +1,19 @@
-import { useEffect, useState } from 'react'
-import styles from './App.module.css'
+import { useEffect, useState } from "react";
+import styles from "./App.module.css";
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+}
 
 function App() {
-  const [mounted, setMounted] = useState(false)
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setMounted(true);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -19,17 +26,34 @@ function App() {
 
       <div className={styles.gridOverlay} />
 
-      <main className={`${styles.main} ${mounted ? styles.visible : ''}`}>
+      <main className={`${styles.main} ${mounted ? styles.visible : ""}`}>
         {/* Icon row */}
         <div className={styles.icons}>
           <div className={styles.iconBadge}>
-            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              viewBox="0 0 24 24"
+              width="28"
+              height="28"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
               <path d="M9 18c-4.51 2-5-2-7-2" />
             </svg>
           </div>
           <div className={styles.iconDivider}>
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
             </svg>
@@ -41,57 +65,96 @@ function App() {
           </div>
         </div>
 
+        {/* Greeting */}
+        <p className={styles.greeting}>{getGreeting()} — welcome in.</p>
+
         {/* Hero text */}
         <h1 className={styles.title}>
-          Welcome to my
+          A space for learning
           <span className={styles.gradient}> GitHub Workflows </span>
           and
           <span className={styles.gradient}> Docker </span>
-          practice demo app
         </h1>
 
         <p className={styles.subtitle}>
-          A hands-on playground for learning CI/CD pipelines, container orchestration,
-          and modern deployment workflows.
+          A hands-on playground for learning CI/CD pipelines, container
+          orchestration, and modern deployment workflows.
         </p>
 
         {/* Feature cards */}
         <div className={styles.cards}>
-          <div className={styles.card}>
-            <div className={styles.cardIcon}>
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="16 18 22 12 16 6" />
-                <polyline points="8 6 2 12 8 18" />
-              </svg>
+          {[
+            {
+              icon: (
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              ),
+              title: "GitHub Actions",
+              desc: "Automate builds, tests, and deployments with powerful CI/CD workflows.",
+            },
+            {
+              icon: (
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="2" y="6" width="20" height="12" rx="2" />
+                  <path d="M12 12h.01" />
+                  <path d="M17 12h.01" />
+                  <path d="M7 12h.01" />
+                </svg>
+              ),
+              title: "Containerization",
+              desc: "Package applications into portable Docker containers for any environment.",
+            },
+            {
+              icon: (
+                <svg
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+              ),
+              title: "Deploy Anywhere",
+              desc: "Ship with confidence using reproducible builds and automated pipelines.",
+            },
+          ].map((card, i) => (
+            <div
+              key={card.title}
+              className={`${styles.card} ${mounted ? styles.cardVisible : ""}`}
+              style={{ transitionDelay: `${0.3 + i * 0.15}s` }}
+            >
+              <div className={styles.cardIcon}>{card.icon}</div>
+              <h3>{card.title}</h3>
+              <p>{card.desc}</p>
             </div>
-            <h3>GitHub Actions</h3>
-            <p>Automate builds, tests, and deployments with powerful CI/CD workflows.</p>
-          </div>
-
-          <div className={styles.card}>
-            <div className={styles.cardIcon}>
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="2" y="6" width="20" height="12" rx="2" />
-                <path d="M12 12h.01" />
-                <path d="M17 12h.01" />
-                <path d="M7 12h.01" />
-              </svg>
-            </div>
-            <h3>Containerization</h3>
-            <p>Package applications into portable Docker containers for any environment.</p>
-          </div>
-
-          <div className={styles.card}>
-            <div className={styles.cardIcon}>
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                <path d="M2 17l10 5 10-5" />
-                <path d="M2 12l10 5 10-5" />
-              </svg>
-            </div>
-            <h3>Deploy Anywhere</h3>
-            <p>Ship with confidence using reproducible builds and automated pipelines.</p>
-          </div>
+          ))}
         </div>
 
         {/* Status pill */}
@@ -101,7 +164,7 @@ function App() {
         </div>
       </main>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
