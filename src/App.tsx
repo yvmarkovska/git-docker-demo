@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import styles from "./App.module.css";
+import { useEffect, useState } from 'react'
+import styles from './App.module.css'
 
 function getGreeting() {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
+  const hour = new Date().getHours()
+  if (hour < 12) return 'Good morning'
+  if (hour < 18) return 'Good afternoon'
+  return 'Good evening'
 }
 
 function App() {
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -26,7 +26,7 @@ function App() {
 
       <div className={styles.gridOverlay} />
 
-      <main className={`${styles.main} ${mounted ? styles.visible : ""}`}>
+      <main className={`${styles.main} ${mounted ? styles.visible : ''}`}>
         {/* Icon row */}
         <div className={styles.icons}>
           <div className={styles.iconBadge}>
@@ -100,8 +100,8 @@ function App() {
                   <polyline points="8 6 2 12 8 18" />
                 </svg>
               ),
-              title: "GitHub Actions",
-              desc: "Automate builds, tests, and deployments with powerful CI/CD workflows.",
+              title: 'GitHub Actions',
+              desc: 'Automate builds, tests, and deployments with powerful CI/CD workflows.',
             },
             {
               icon: (
@@ -121,8 +121,8 @@ function App() {
                   <path d="M7 12h.01" />
                 </svg>
               ),
-              title: "Containerization",
-              desc: "Package applications into portable Docker containers for any environment.",
+              title: 'Containerization',
+              desc: 'Package applications into portable Docker containers for any environment.',
             },
             {
               icon: (
@@ -141,13 +141,13 @@ function App() {
                   <path d="M2 12l10 5 10-5" />
                 </svg>
               ),
-              title: "Deploy Anywhere",
-              desc: "Ship with confidence using reproducible builds and automated pipelines.",
+              title: 'Deploy Anywhere',
+              desc: 'Ship with confidence using reproducible builds and automated pipelines.',
             },
           ].map((card, i) => (
             <div
               key={card.title}
-              className={`${styles.card} ${mounted ? styles.cardVisible : ""}`}
+              className={`${styles.card} ${mounted ? styles.cardVisible : ''}`}
               style={{ transitionDelay: `${0.3 + i * 0.15}s` }}
             >
               <div className={styles.cardIcon}>{card.icon}</div>
@@ -164,7 +164,7 @@ function App() {
         </div>
       </main>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
