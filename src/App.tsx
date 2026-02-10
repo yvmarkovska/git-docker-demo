@@ -161,6 +161,7 @@ function App() {
         <div className={styles.statusBar}>
           <span className={styles.statusDot} />
           <span>Built with React + Vite + TypeScript</span>
+          <span>Check out Github repo for more useful info</span>
         </div>
       </main>
     </div>
