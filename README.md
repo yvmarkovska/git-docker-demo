@@ -15,6 +15,12 @@ Demo repository for Git best practices, Docker fundamentals, and modern developm
 - **Commit Format all Dev agree to**: `[tag] description` (feat, fix, docs, refactor, test, chore)
 - **YAGNI principle**: Do Not overcomplicate things with too many workflows, conventions and templates
 
+##### Repositories with good practices
+
+https://github.com/VGVentures/news_toolkit
+https://github.com/facebook/react
+https://github.com/Alliedium/awesome-github-actions?utm_source=chatgpt.com
+
 ##### Repo contains:
 
 - **PR Template**: Auto-loaded with Jira link, summary, and testing sections
@@ -61,11 +67,6 @@ Automated checks run on every pull request:
 ### 🔔 Notifications & Monitoring for failed builds
 
 ## 📚 Resources
-
-### Repositories with good practices
-
-https://github.com/VGVentures/news_toolkit
-https://github.com/facebook/react
 
 ### Current Setup
 
