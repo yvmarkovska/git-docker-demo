@@ -1,0 +1,108 @@
+name: Create Release on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'  # Triggers on any tag starting with 'v'
+
+permissions:
+  contents: write
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Get all history to find previous tags
+
+      - name: Get current and previous tag
+        id: get_tags
+        run: |
+          # Current tag
+          CURRENT_TAG=${GITHUB_REF#refs/tags/}
+          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+          
+          # Previous tag
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -n1)
+          
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "This is the first tag"
+            echo "previous_tag=" >> $GITHUB_OUTPUT
+          else
+            echo "Previous tag: $PREVIOUS_TAG"
+            echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "Current tag: $CURRENT_TAG"
+
+      - name: Generate release notes with PR links
+        id: release_notes
+        run: |
+          CURRENT_TAG="${{ steps.get_tags.outputs.current_tag }}"
+          PREVIOUS_TAG="${{ steps.get_tags.outputs.previous_tag }}"
+          REPO="${{ github.repository }}"
+          
+          # Create release notes file
+          NOTES_FILE="release_notes.md"
+          
+          echo "# Release $CURRENT_TAG" > $NOTES_FILE
+          echo "" >> $NOTES_FILE
+          echo "## 📝 Changes in this release" >> $NOTES_FILE
+          echo "" >> $NOTES_FILE
+          
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # First release - show all commits
+            echo "**Initial Release**" >> $NOTES_FILE
+            echo "" >> $NOTES_FILE
+          
+            git log --pretty=format:"%s" $CURRENT_TAG | while read commit_msg; do
+              # Extract PR number if it exists (format: #123)
+              if [[ $commit_msg =~ \(#([0-9]+)\) ]]; then
+                PR_NUM="${BASH_REMATCH[1]}"
+                # Make PR number a clickable link
+                FORMATTED_MSG=$(echo "$commit_msg" | sed "s/(#${PR_NUM})/(#${PR_NUM})/")
+                echo "- $FORMATTED_MSG" >> $NOTES_FILE
+              else
+                echo "- $commit_msg" >> $NOTES_FILE
+              fi
+            done
+          else
+            # Show commits between tags
+            COMMIT_COUNT=$(git rev-list --count ${PREVIOUS_TAG}..${CURRENT_TAG})
+            echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> $NOTES_FILE
+            echo "" >> $NOTES_FILE
+          
+            git log ${PREVIOUS_TAG}..${CURRENT_TAG} --pretty=format:"%s" --reverse | while read commit_msg; do
+              # Extract PR number if it exists (format: #123)
+              if [[ $commit_msg =~ \(#([0-9]+)\) ]]; then
+                PR_NUM="${BASH_REMATCH[1]}"
+                # Keep the (#123) format - GitHub automatically makes it a link
+                echo "- $commit_msg" >> $NOTES_FILE
+              else
+                echo "- $commit_msg" >> $NOTES_FILE
+              fi
+            done
+          fi
+          
+          echo "" >> $NOTES_FILE
+          echo "---" >> $NOTES_FILE
+          echo "" >> $NOTES_FILE
+          echo "**Full Changelog**: https://github.com/$REPO/compare/${PREVIOUS_TAG}...${CURRENT_TAG}" >> $NOTES_FILE
+          
+          # Output for debugging
+          echo "Generated release notes:"
+          cat $NOTES_FILE
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_tags.outputs.current_tag }}
+          name: Release ${{ steps.get_tags.outputs.current_tag }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
