@@ -12,7 +12,8 @@ Demo repository for Git best practices, Docker fundamentals, and modern developm
 
 - **Branch Naming**: `personName/jiraIssue/branch-description`
   - Example: `john/PROJ-123/add-user-auth`
-- **Commit Format**: `[tag] description` (feat, fix, docs, refactor, test, chore)
+- **Commit Format all Dev agree to**: `[tag] description` (feat, fix, docs, refactor, test, chore)
+- **YAGNI principle**: Do Not overcomplicate things with too many workflows, conventions and templates
 
 ##### Repo contains:
 
