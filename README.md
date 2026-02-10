@@ -1,101 +1,82 @@
 # 🚀 Git Workflow & Docker Demo
 
-Demo repository for Git best practices, Docker fundamentals, and development workflows.
+Demo repository for Git best practices, Docker fundamentals, and modern development workflows.
 
 ---
 
-## ✨ Features
+## ✨ Current Features
 
-### 🌿 Git Workflow
+### 🌿 Git Workflow and Good practices recommendation
+
+#### Suggestions:
+
 - **Branch Naming**: `personName/jiraIssue/branch-description`
-  - Example: `mariya/PROJ-123/add-user-auth`
+  - Example: `john/PROJ-123/add-user-auth`
+- **Commit Format all Dev agree to**: `[tag] description` (feat, fix, docs, refactor, test, chore)
+- **YAGNI principle**: Do Not overcomplicate things with too many workflows, conventions and templates
+
+##### Repositories with good practices
+
+https://github.com/VGVentures/news_toolkit
+https://github.com/facebook/react
+https://github.com/Alliedium/awesome-github-actions?utm_source=chatgpt.com
+
+##### Repo contains:
+
 - **PR Template**: Auto-loaded with Jira link, summary, and testing sections
 - **Squash & Merge**: Clean history with auto-delete branches after merge
-- **Commit Format**: `Use key words at start` (feat, fix, docs, refactor, test, chore)
+- - **Pre-commit Hooks**
+- - **Github Actions**
 
-### 🪝 Pre-commit Hooks (Husky)
+### 🪝 Pre-commit Hooks (Husky + Lint-staged)
+
 Automated checks before every commit:
-- **Lint-staged**: Runs only on staged files
-- **TypeScript**: Type-checking
-- **Prettier**: Auto-formatting
-- **ESLint**: Code quality validation
 
-**How it works**: `git commit` → Husky runs checks → ✅ pass or ❌ block
+- **TypeScript**: Type-checking with `tsc-files`
+- **ESLint**: Auto-fixes code quality issues
+- **Prettier**: Auto-formats code
+- **Blocking**: Commit fails if unfixable errors exist
+
+### ✅ PR Checks (GitHub Actions)
+
+Automated checks run on every pull request:
+
+- **TypeScript type-check**: Ensures no type errors
+- **ESLint**: Code quality validation
+- **Prettier check**: Formatting consistency
+- **Tests**: Runs test suite (when added)
+
+**Merge Protection**: PRs must pass all checks before squash & merge is allowed.
 
 ### 🐳 Docker
+
 > Coming soon...
 
----
+## 🎯 Best Practices and Ideas for workflows to add
 
-## 🚀 Getting Started
-```bash
-# Clone and install
-git clone https://github.com/yvmarkovska/git-docker-demo.git
-cd git-docker-demo
-npm install
-```
+### 🔒 **Security & Code Quality**
 
----
+### 🚀 **CI/CD & Deployment - automated deployment**
 
-## 📝 Git Conventions
+### 🚀 **Test Docker build**
 
-### Branch Naming
-```
-yourname/PROJ-123/feature-description
-```
+### 🚀 **API Documentation (Swagger/OpenAPI)**
 
-### Commit Messages
-```bash
-Start with key word
-Fixing login bug
-Updating README
-Adding login page
-```
+### 🚀 **Branch Name Validation**
 
-### PR Process
-1. Create branch with convention
-2. Make changes and commit
-3. Push and open PR (template auto-loads)
-4. Get approval and squash merge
-5. Branch auto-deletes ✨
-
----
-
-## 🪝 Husky Setup
-
-Pre-commit checks run automatically on `npm install`.
-
-**Manual commands:**
-```bash
-npm run format    # Prettier
-npm run lint      # ESLint
-npm run type-check # TypeScript
-```
-
-**Bypass (use carefully):**
-```bash
-git commit --no-verify -m "emergency fix"
-```
-
----
-
-## 🤝 Contributing
-
-1. Fork the repo
-2. Create branch: `yournam/ISSUE-123/description`
-3. Commit: `feat: add feature`
-4. Open PR using template
-
----
+### 🔔 Notifications & Monitoring for failed builds
 
 ## 📚 Resources
 
-- [Conventional Commits](https://www.conventionalcommits.org/)
-- [Husky](https://typicode.github.io/husky/)
-- [Docker Docs](https://docs.docker.com/)
+### Current Setup
 
----
+- [Husky](https://typicode.github.io/husky/)
+- [Lint-staged](https://github.com/okonet/lint-staged)
+- [GitHub Actions](https://docs.github.com/en/actions)
 
 **Author**: [@yvmarkovska](https://github.com/yvmarkovska)
 
-⭐ Star if helpful!
+⭐ Star if this helps you build better workflows!
+Built with ❤️ for better development workflows
+
+---
