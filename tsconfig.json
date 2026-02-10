@@ -15,7 +15,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "types": ["vite/client"]
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/css-modules.d.ts" // <--- include the CSS declaration file explicitly
+  ]
 }
