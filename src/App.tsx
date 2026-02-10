@@ -49,20 +49,7 @@ function App() {
               <path d="M9 18c-4.51 2-5-2-7-2" />
             </svg>
           </a>
-          <div className={styles.iconDivider}>
-            <svg
-              viewBox="0 0 24 24"
-              width="20"
-              height="20"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </div>
+          <span className={styles.iconDivider}>&#10043;</span>
           <a
             className={styles.iconBadge}
             href="https://www.docker.com"
@@ -76,13 +63,15 @@ function App() {
         </div>
 
         {/* Greeting */}
-        <p className={styles.greeting}>{getGreeting()} — welcome in.</p>
+        <p className={styles.greeting}>
+          <span className={styles.greetingText}>{getGreeting()}</span> — welcome
+          in.
+        </p>
 
         {/* Hero text */}
         <h1 className={styles.title}>
           A space for learning
-          <span className={styles.gradient}> GitHub Workflows </span>
-          and
+          <span className={styles.gradient}> GitHub Workflows </span>&
           <span className={styles.gradient}> Docker </span>
         </h1>
 
@@ -90,6 +79,11 @@ function App() {
           A hands-on playground for learning CI/CD pipelines, container
           orchestration, and modern deployment workflows.
         </p>
+
+        {/* Botanical divider */}
+        <div className={styles.divider}>
+          <span className={styles.dividerLeaf}>&#9753;</span>
+        </div>
 
         {/* Feature cards */}
         <div className={styles.cards}>
@@ -112,6 +106,7 @@ function App() {
               ),
               title: 'GitHub Actions',
               desc: 'Automate builds, tests, and deployments with powerful CI/CD workflows.',
+              accent: 'terracotta' as const,
             },
             {
               icon: (
@@ -133,6 +128,7 @@ function App() {
               ),
               title: 'Containerization',
               desc: 'Package applications into portable Docker containers for any environment.',
+              accent: 'sage' as const,
             },
             {
               icon: (
@@ -153,6 +149,7 @@ function App() {
               ),
               title: 'Deploy Anywhere',
               desc: 'Ship with confidence using reproducible builds and automated pipelines.',
+              accent: 'sand' as const,
             },
           ].map((card, i) => (
             <div
@@ -160,7 +157,11 @@ function App() {
               className={`${styles.card} ${mounted ? styles.cardVisible : ''}`}
               style={{ transitionDelay: `${0.3 + i * 0.15}s` }}
             >
-              <div className={styles.cardIcon}>{card.icon}</div>
+              <div
+                className={`${styles.cardIcon} ${styles[`cardIcon_${card.accent}`]}`}
+              >
+                {card.icon}
+              </div>
               <h3>{card.title}</h3>
               <p>{card.desc}</p>
             </div>
@@ -170,9 +171,11 @@ function App() {
         {/* Status pill */}
         <div className={styles.statusBar}>
           <span className={styles.statusDot} />
-          <span>Built with React + Vite + TypeScript</span>
-          <span>Check out Github repo for more useful info</span>
+          <span>React + Vite + TypeScript</span>
+          <span className={styles.statusSep} />
+          <span>Explore the repo for more</span>
         </div>
+
         {/* Repo link */}
         <a
           className={styles.repoLink}
@@ -193,7 +196,9 @@ function App() {
             <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
             <path d="M9 18c-4.51 2-5-2-7-2" />
           </svg>
-          <span>yvmarkovska/git-docker-demo</span>
+          <span className={styles.repoLinkText}>
+            yvmarkovska/git-docker-demo
+          </span>
         </a>
       </main>
     </div>
