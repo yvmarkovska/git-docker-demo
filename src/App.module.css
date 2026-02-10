@@ -280,6 +280,28 @@
   animation: pulse 2.5s ease-in-out infinite;
 }
 
+/* ── Repo link ── */
+.repoLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent-terracotta);
+  text-decoration: none;
+  border-radius: 999px;
+  transition:
+    color 0.3s ease,
+    transform 0.3s ease;
+}
+
+.repoLink:hover {
+  color: var(--accent-rust);
+  transform: translateY(-1px);
+}
+
 @keyframes pulse {
   0%,
   100% {
