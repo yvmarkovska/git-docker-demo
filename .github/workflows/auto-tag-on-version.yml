@@ -19,7 +19,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Check if version changed
         id: version_check
@@ -37,6 +37,7 @@ jobs:
           fi
 
       - name: Create and push tag
+        id: create_tag
         if: steps.version_check.outputs.changed == 'true'
         run: |
           TAG="prod/v${{ steps.version_check.outputs.new }}"
@@ -48,5 +49,55 @@ jobs:
 
           git tag "$TAG"
           git push origin "$TAG"
+
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "created=true" >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate release notes
+        if: steps.create_tag.outputs.created == 'true'
+        run: |
+          RAW_TAG="${{ steps.create_tag.outputs.tag }}"
+          CLEAN_TAG="${RAW_TAG#prod/}"
+          REPO="${{ github.repository }}"
+
+          PREVIOUS_TAG=$(
+            git tag --list "prod/v*" \
+              --sort=-version:refname |
+            grep -v "^${RAW_TAG}$" |
+            head -n1
+          )
+
+          echo "## 📝 Changes in this release" > release_notes.md
+          echo "" >> release_notes.md
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            echo "**Initial Release**" >> release_notes.md
+            RANGE="$RAW_TAG"
+          else
+            COMMIT_COUNT=$(git rev-list --first-parent --count ${PREVIOUS_TAG}..${RAW_TAG})
+            echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> release_notes.md
+            echo "" >> release_notes.md
+            RANGE="${PREVIOUS_TAG}..${RAW_TAG}"
+          fi
+
+          git log $RANGE --first-parent --pretty=tformat:"%s" --reverse | while IFS= read -r msg; do
+            [ -z "$msg" ] && continue
+            echo "- $msg" >> release_notes.md
+          done
+
+          echo "" >> release_notes.md
+          echo "---" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/$REPO/compare/${PREVIOUS_TAG}...${RAW_TAG}" >> release_notes.md
+
+      - name: Create GitHub Release
+        if: steps.create_tag.outputs.created == 'true'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.create_tag.outputs.tag }}
+          name: Release ${{ steps.version_check.outputs.new }}
+          body_path: release_notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
