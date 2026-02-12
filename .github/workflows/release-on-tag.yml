@@ -32,8 +32,6 @@ jobs:
           PREVIOUS_TAG="${{ steps.get_tags.outputs.previous_tag }}"
           REPO="${{ github.repository }}"
 
-          echo "# Release $CURRENT_TAG" > release_notes.md
-          echo "" >> release_notes.md
           echo "## 📝 Changes in this release" >> release_notes.md
           echo "" >> release_notes.md
 
