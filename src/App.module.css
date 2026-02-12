@@ -350,6 +350,39 @@
   opacity: 0.6;
 }
 
+/* ── CTA Button ── */
+.ctaButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.75rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    var(--accent-terracotta),
+    var(--accent-sage)
+  );
+  box-shadow: 0 4px 16px rgba(198, 124, 91, 0.25);
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.ctaButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(198, 124, 91, 0.35);
+}
+
+.ctaButton:active {
+  transform: translateY(-1px);
+}
+
 /* ── Repo link ── */
 .repoLink {
   display: inline-flex;
