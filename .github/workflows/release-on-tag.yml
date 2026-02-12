@@ -3,7 +3,7 @@ name: Create Release on Tag
 on:
   push:
     tags:
-      - 'v*' # Triggers on any tag starting with 'v'
+      - 'v*'
 
 permissions:
   contents: write
@@ -16,80 +16,46 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Get all history
+          fetch-depth: 0
 
       - name: Get current and previous tag
         id: get_tags
         run: |
           CURRENT_TAG=${GITHUB_REF#refs/tags/}
-          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
-
           PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -n1)
-
-          if [ -z "$PREVIOUS_TAG" ]; then
-            echo "previous_tag=" >> $GITHUB_OUTPUT
-          else
-            echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
-          fi
-
-          echo "Current tag: $CURRENT_TAG"
-          echo "Previous tag: $PREVIOUS_TAG"
+          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
 
       - name: Generate release notes
-        id: release_notes
         run: |
           CURRENT_TAG="${{ steps.get_tags.outputs.current_tag }}"
           PREVIOUS_TAG="${{ steps.get_tags.outputs.previous_tag }}"
           REPO="${{ github.repository }}"
-          NOTES_FILE="release_notes.md"
 
-          echo "# Release $CURRENT_TAG" > $NOTES_FILE
-          echo "" >> $NOTES_FILE
-          echo "## 📝 Changes in this release" >> $NOTES_FILE
-          echo "" >> $NOTES_FILE
+          echo "# Release $CURRENT_TAG" > release_notes.md
+          echo "" >> release_notes.md
+          echo "## 📝 Changes in this release" >> release_notes.md
+          echo "" >> release_notes.md
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            # First release
-            echo "**Initial Release**" >> $NOTES_FILE
-            echo "" >> $NOTES_FILE
+            echo "**Initial Release**" >> release_notes.md
             RANGE="$CURRENT_TAG"
           else
             COMMIT_COUNT=$(git rev-list --first-parent --count ${PREVIOUS_TAG}..${CURRENT_TAG})
-            echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> $NOTES_FILE
-            echo "" >> $NOTES_FILE
+            echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> release_notes.md
+            echo "" >> release_notes.md
             RANGE="${PREVIOUS_TAG}..${CURRENT_TAG}"
           fi
 
-          # Get all commits on main branch using --first-parent
-          # This gets: merge commits, squash commits, rebase commits, and direct commits
-          git log $RANGE --first-parent --pretty=format:"%H|%s|%P" --reverse | while IFS='|' read commit_hash commit_msg parents; do
-            # Count number of parents (space-separated)
-            parent_count=$(echo "$parents" | wc -w)
-          
-            if [ $parent_count -gt 1 ]; then
-              # This is a MERGE COMMIT (has 2+ parents)
-              # Check if it's a regular merge or squash merge
-              if [[ $commit_msg =~ ^Merge\ pull\ request\ #([0-9]+)\ from ]]; then
-                # Regular merge commit - show it
-                echo "- $commit_msg" >> $NOTES_FILE
-              else
-                # Could be a manual merge or other merge type
-                echo "- $commit_msg" >> $NOTES_FILE
-              fi
-            else
-              # This is a SINGLE-PARENT COMMIT
-              # Could be: squash merge, rebase commit, or direct commit to main
-              echo "- $commit_msg" >> $NOTES_FILE
-            fi
+          git log $RANGE --first-parent --pretty=tformat:"%s" --reverse | while IFS= read -r msg; do
+            [ -z "$msg" ] && continue
+            echo "- $msg" >> release_notes.md
           done
 
-          echo "" >> $NOTES_FILE
-          echo "---" >> $NOTES_FILE
-          echo "" >> $NOTES_FILE
-          echo "**Full Changelog**: https://github.com/$REPO/compare/${PREVIOUS_TAG}...${CURRENT_TAG}" >> $NOTES_FILE
-
-          echo "Generated release notes:"
-          cat $NOTES_FILE
+          echo "" >> release_notes.md
+          echo "---" >> release_notes.md
+          echo "" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/$REPO/compare/${PREVIOUS_TAG}...${CURRENT_TAG}" >> release_notes.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -97,7 +63,5 @@ jobs:
           tag_name: ${{ steps.get_tags.outputs.current_tag }}
           name: Release ${{ steps.get_tags.outputs.current_tag }}
           body_path: release_notes.md
-          draft: false
-          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
