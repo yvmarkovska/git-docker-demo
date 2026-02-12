@@ -381,6 +381,175 @@ function Contact() {
             </div>
           </div>
         </section>
+
+        {/* Social links */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Find Me Online</h2>
+          <div className={styles.socialGrid}>
+            <a
+              href="https://github.com/yvmarkovska"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialCard}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                <path d="M9 18c-4.51 2-5-2-7-2" />
+              </svg>
+              <span>GitHub</span>
+            </a>
+            <a
+              href="https://linkedin.com/in/yoana-markovska"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialCard}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                <rect x="2" y="9" width="4" height="12" />
+                <circle cx="4" cy="4" r="2" />
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+            <a
+              href="https://twitter.com/yoana_dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialCard}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+              </svg>
+              <span>Twitter</span>
+            </a>
+            <a
+              href="https://dev.to/yoana"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialCard}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                <polyline points="10 2 10 10 13 7 16 10 16 2" />
+              </svg>
+              <span>Blog</span>
+            </a>
+          </div>
+        </section>
+
+        {/* Office hours */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Office Hours</h2>
+          <div className={styles.hoursCard}>
+            <div className={styles.hoursRow}>
+              <span className={styles.hoursDay}>Monday - Friday</span>
+              <span className={styles.hoursTime}>9:00 AM - 6:00 PM</span>
+            </div>
+            <div className={styles.hoursSep} />
+            <div className={styles.hoursRow}>
+              <span className={styles.hoursDay}>Saturday</span>
+              <span className={styles.hoursTime}>10:00 AM - 2:00 PM</span>
+            </div>
+            <div className={styles.hoursSep} />
+            <div className={`${styles.hoursRow} ${styles.hoursRowClosed}`}>
+              <span className={styles.hoursDay}>Sunday</span>
+              <span className={styles.hoursClosed}>Closed</span>
+            </div>
+            <div className={styles.hoursNote}>
+              <span className={styles.hoursNoteDot} />
+              All times in EET (Sofia, Bulgaria)
+            </div>
+          </div>
+        </section>
+
+        {/* Contact form placeholder */}
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Send a Message</h2>
+          <div className={styles.formCard}>
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Name</label>
+                <div className={styles.formInput}>
+                  <span className={styles.formPlaceholder}>Your name</span>
+                </div>
+              </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>Email</label>
+                <div className={styles.formInput}>
+                  <span className={styles.formPlaceholder}>your@email.com</span>
+                </div>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Subject</label>
+              <div className={styles.formInput}>
+                <span className={styles.formPlaceholder}>
+                  What is this about?
+                </span>
+              </div>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.formLabel}>Message</label>
+              <div className={styles.formTextarea}>
+                <span className={styles.formPlaceholder}>
+                  Write your message here...
+                </span>
+              </div>
+            </div>
+            <div className={styles.formButton}>
+              Send Message
+              <svg
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="22" y1="2" x2="11" y2="13" />
+                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+              </svg>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   )
