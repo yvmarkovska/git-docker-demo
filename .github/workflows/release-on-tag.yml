@@ -54,36 +54,23 @@ jobs:
           echo "" >> $NOTES_FILE
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            # First release - show all commits
+            # First release - show only first-parent commits (main branch)
             echo "**Initial Release**" >> $NOTES_FILE
             echo "" >> $NOTES_FILE
 
-            git log --pretty=format:"%s" $CURRENT_TAG | while read commit_msg; do
-              # Extract PR number if it exists (format: #123)
-              if [[ $commit_msg =~ \(#([0-9]+)\) ]]; then
-                PR_NUM="${BASH_REMATCH[1]}"
-                # Make PR number a clickable link
-                FORMATTED_MSG=$(echo "$commit_msg" | sed "s/(#${PR_NUM})/(#${PR_NUM})/")
-                echo "- $FORMATTED_MSG" >> $NOTES_FILE
-              else
-                echo "- $commit_msg" >> $NOTES_FILE
-              fi
+            git log --first-parent --pretty=format:"%s" $CURRENT_TAG | while read commit_msg; do
+              echo "- $commit_msg" >> $NOTES_FILE
             done
           else
-            # Show commits between tags
-            COMMIT_COUNT=$(git rev-list --count ${PREVIOUS_TAG}..${CURRENT_TAG})
+            # Show only first-parent commits between tags (commits made directly to main)
+            COMMIT_COUNT=$(git rev-list --first-parent --count ${PREVIOUS_TAG}..${CURRENT_TAG})
             echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> $NOTES_FILE
             echo "" >> $NOTES_FILE
 
-            git log ${PREVIOUS_TAG}..${CURRENT_TAG} --pretty=format:"%s" --reverse | while read commit_msg; do
-              # Extract PR number if it exists (format: #123)
-              if [[ $commit_msg =~ \(#([0-9]+)\) ]]; then
-                PR_NUM="${BASH_REMATCH[1]}"
-                # Keep the (#123) format - GitHub automatically makes it a link
-                echo "- $commit_msg" >> $NOTES_FILE
-              else
-                echo "- $commit_msg" >> $NOTES_FILE
-              fi
+            # --first-parent only follows the main branch history
+            # This shows squash-merge commit messages and direct commits
+            git log ${PREVIOUS_TAG}..${CURRENT_TAG} --first-parent --pretty=format:"%s" --reverse | while read commit_msg; do
+              echo "- $commit_msg" >> $NOTES_FILE
             done
           fi
 
