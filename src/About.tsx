@@ -49,8 +49,8 @@ function About() {
 
           <p className={styles.bio}>
             Hi, my name is <strong>Yoana</strong> and this is my practice repo
-            for Docker and Github actions and other devops-ish stuff which used
-            to scare me
+            for Docker and Github actions and other devops-ish stuff which I
+            didn't use to know
           </p>
         </section>
       </div>
