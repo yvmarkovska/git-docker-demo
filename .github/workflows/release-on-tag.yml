@@ -26,26 +26,13 @@ jobs:
           echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
           echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
 
-      - name: Get tag message
-        id: tag_message
-        run: |
-          CURRENT_TAG="${{ steps.get_tags.outputs.current_tag }}"
-          # For annotated tags, extract the message; lightweight tags return empty
-          TAG_MSG=$(git tag -l --format='%(contents)' "$CURRENT_TAG" | head -1)
-          echo "message=$TAG_MSG" >> $GITHUB_OUTPUT
-
       - name: Generate release notes
         run: |
           CURRENT_TAG="${{ steps.get_tags.outputs.current_tag }}"
           PREVIOUS_TAG="${{ steps.get_tags.outputs.previous_tag }}"
           REPO="${{ github.repository }}"
-          TAG_MSG="${{ steps.tag_message.outputs.message }}"
 
-          if [ -n "$TAG_MSG" ]; then
-            echo "# Release $CURRENT_TAG — $TAG_MSG" > release_notes.md
-          else
-            echo "# Release $CURRENT_TAG" > release_notes.md
-          fi
+          echo "# Release $CURRENT_TAG" > release_notes.md
           echo "" >> release_notes.md
           echo "## 📝 Changes in this release" >> release_notes.md
           echo "" >> release_notes.md
@@ -74,7 +61,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.get_tags.outputs.current_tag }}
-          name: "Release ${{ steps.get_tags.outputs.current_tag }}${{ steps.tag_message.outputs.message && format(' — {0}', steps.tag_message.outputs.message) || '' }}"
+          name: Release ${{ steps.get_tags.outputs.current_tag }}
           body_path: release_notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
