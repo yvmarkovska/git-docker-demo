@@ -16,36 +16,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Get all history to find previous tags
+          fetch-depth: 0 # Get all history
 
       - name: Get current and previous tag
         id: get_tags
         run: |
-          # Current tag
           CURRENT_TAG=${GITHUB_REF#refs/tags/}
           echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
 
-          # Previous tag
           PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -n1)
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            echo "This is the first tag"
             echo "previous_tag=" >> $GITHUB_OUTPUT
           else
-            echo "Previous tag: $PREVIOUS_TAG"
             echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
           fi
 
           echo "Current tag: $CURRENT_TAG"
+          echo "Previous tag: $PREVIOUS_TAG"
 
-      - name: Generate release notes with PR links
+      - name: Generate release notes
         id: release_notes
         run: |
           CURRENT_TAG="${{ steps.get_tags.outputs.current_tag }}"
           PREVIOUS_TAG="${{ steps.get_tags.outputs.previous_tag }}"
           REPO="${{ github.repository }}"
-
-          # Create release notes file
           NOTES_FILE="release_notes.md"
 
           echo "# Release $CURRENT_TAG" > $NOTES_FILE
@@ -54,32 +49,45 @@ jobs:
           echo "" >> $NOTES_FILE
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            # First release - show only first-parent commits (main branch)
+            # First release
             echo "**Initial Release**" >> $NOTES_FILE
             echo "" >> $NOTES_FILE
-
-            git log --first-parent --pretty=format:"%s" $CURRENT_TAG | while read commit_msg; do
-              echo "- $commit_msg" >> $NOTES_FILE
-            done
+            RANGE="$CURRENT_TAG"
           else
-            # Show only first-parent commits between tags (commits made directly to main)
             COMMIT_COUNT=$(git rev-list --first-parent --count ${PREVIOUS_TAG}..${CURRENT_TAG})
             echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> $NOTES_FILE
             echo "" >> $NOTES_FILE
-
-            # --first-parent only follows the main branch history
-            # This shows squash-merge commit messages and direct commits
-            git log ${PREVIOUS_TAG}..${CURRENT_TAG} --first-parent --pretty=format:"%s" --reverse | while read commit_msg; do
-              echo "- $commit_msg" >> $NOTES_FILE
-            done
+            RANGE="${PREVIOUS_TAG}..${CURRENT_TAG}"
           fi
+
+          # Get all commits on main branch using --first-parent
+          # This gets: merge commits, squash commits, rebase commits, and direct commits
+          git log $RANGE --first-parent --pretty=format:"%H|%s|%P" --reverse | while IFS='|' read commit_hash commit_msg parents; do
+            # Count number of parents (space-separated)
+            parent_count=$(echo "$parents" | wc -w)
+          
+            if [ $parent_count -gt 1 ]; then
+              # This is a MERGE COMMIT (has 2+ parents)
+              # Check if it's a regular merge or squash merge
+              if [[ $commit_msg =~ ^Merge\ pull\ request\ #([0-9]+)\ from ]]; then
+                # Regular merge commit - show it
+                echo "- $commit_msg" >> $NOTES_FILE
+              else
+                # Could be a manual merge or other merge type
+                echo "- $commit_msg" >> $NOTES_FILE
+              fi
+            else
+              # This is a SINGLE-PARENT COMMIT
+              # Could be: squash merge, rebase commit, or direct commit to main
+              echo "- $commit_msg" >> $NOTES_FILE
+            fi
+          done
 
           echo "" >> $NOTES_FILE
           echo "---" >> $NOTES_FILE
           echo "" >> $NOTES_FILE
           echo "**Full Changelog**: https://github.com/$REPO/compare/${PREVIOUS_TAG}...${CURRENT_TAG}" >> $NOTES_FILE
 
-          # Output for debugging
           echo "Generated release notes:"
           cat $NOTES_FILE
 
