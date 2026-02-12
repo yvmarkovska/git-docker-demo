@@ -173,6 +173,7 @@ function App() {
         <div className={styles.statusBar}>
           <span className={styles.statusDot} />
           <span>React + Vite + TypeScript</span>
+          <span>Tikva1</span>
           <span className={styles.statusSep} />
           <span>Explore the repo for more</span>
         </div>
