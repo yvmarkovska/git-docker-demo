@@ -201,6 +201,12 @@ function App() {
           <Link to="/team" className={styles.ctaButtonOutline}>
             Team
           </Link>
+          <Link to="/organization" className={styles.ctaButtonOutline}>
+            Organization
+          </Link>
+          <Link to="/contact" className={styles.ctaButtonOutline}>
+            Contact
+          </Link>
         </div>
 
         {/* Repo link */}
