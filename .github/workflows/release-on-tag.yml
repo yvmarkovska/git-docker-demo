@@ -3,7 +3,7 @@ name: Create Release on Tag
 on:
   push:
     tags:
-      - 'v*'
+      - 'prod/v*'
 
 permissions:
   contents: write
@@ -21,28 +21,38 @@ jobs:
       - name: Get current and previous tag
         id: get_tags
         run: |
-          CURRENT_TAG=${GITHUB_REF#refs/tags/}
-          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -n1)
-          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+          RAW_TAG=${GITHUB_REF#refs/tags/}
+          CLEAN_TAG=${RAW_TAG#prod/}
+
+          PREVIOUS_TAG=$(
+            git tag --list "prod/v*" \
+              --sort=-version:refname |
+            grep -v "^${RAW_TAG}$" |
+            head -n1
+          )
+
+          echo "raw_tag=$RAW_TAG" >> $GITHUB_OUTPUT
+          echo "clean_tag=$CLEAN_TAG" >> $GITHUB_OUTPUT
           echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
 
       - name: Generate release notes
         run: |
-          CURRENT_TAG="${{ steps.get_tags.outputs.current_tag }}"
+          RAW_TAG="${{ steps.get_tags.outputs.raw_tag }}"
+          CLEAN_TAG="${{ steps.get_tags.outputs.clean_tag }}"
           PREVIOUS_TAG="${{ steps.get_tags.outputs.previous_tag }}"
           REPO="${{ github.repository }}"
 
-          echo "## 📝 Changes in this release" >> release_notes.md
+          echo "## 📝 Changes in this release" > release_notes.md
           echo "" >> release_notes.md
 
           if [ -z "$PREVIOUS_TAG" ]; then
             echo "**Initial Release**" >> release_notes.md
-            RANGE="$CURRENT_TAG"
+            RANGE="$RAW_TAG"
           else
-            COMMIT_COUNT=$(git rev-list --first-parent --count ${PREVIOUS_TAG}..${CURRENT_TAG})
+            COMMIT_COUNT=$(git rev-list --first-parent --count ${PREVIOUS_TAG}..${RAW_TAG})
             echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> release_notes.md
             echo "" >> release_notes.md
-            RANGE="${PREVIOUS_TAG}..${CURRENT_TAG}"
+            RANGE="${PREVIOUS_TAG}..${RAW_TAG}"
           fi
 
           git log $RANGE --first-parent --pretty=tformat:"%s" --reverse | while IFS= read -r msg; do
@@ -53,13 +63,13 @@ jobs:
           echo "" >> release_notes.md
           echo "---" >> release_notes.md
           echo "" >> release_notes.md
-          echo "**Full Changelog**: https://github.com/$REPO/compare/${PREVIOUS_TAG}...${CURRENT_TAG}" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/$REPO/compare/${PREVIOUS_TAG}...${RAW_TAG}" >> release_notes.md
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.get_tags.outputs.current_tag }}
-          name: Release ${{ steps.get_tags.outputs.current_tag }}
+          tag_name: ${{ steps.get_tags.outputs.raw_tag }}
+          name: Release ${{ steps.get_tags.outputs.clean_tag }}
           body_path: release_notes.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
