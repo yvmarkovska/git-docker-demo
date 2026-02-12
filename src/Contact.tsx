@@ -38,6 +38,40 @@ function Contact() {
           Back to Home
         </Link>
 
+        <Link to="/" className={styles.backLink}>
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
+          Back to Home
+        </Link>
+
+        <Link to="/" className={styles.backLink}>
+          <svg
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M19 12H5" />
+            <path d="M12 19l-7-7 7-7" />
+          </svg>
+          Back to Home
+        </Link>
+
         <section className={styles.hero}>
           <h1 className={styles.heroTitle}>
             <span className={styles.gradient}>Contact</span>
