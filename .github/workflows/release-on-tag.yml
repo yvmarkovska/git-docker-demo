@@ -27,6 +27,7 @@ jobs:
       - name: Get current and previous tag
         id: get_tags
         run: |
+          git fetch --tags
           if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
             RAW_TAG="${{ inputs.tag_name }}"
           else
