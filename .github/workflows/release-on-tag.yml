@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'prod/v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to create release for (e.g. prod/v1.0.16)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -21,7 +27,11 @@ jobs:
       - name: Get current and previous tag
         id: get_tags
         run: |
-          RAW_TAG=${GITHUB_REF#refs/tags/}
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            RAW_TAG="${{ inputs.tag_name }}"
+          else
+            RAW_TAG=${GITHUB_REF#refs/tags/}
+          fi
           CLEAN_TAG=${RAW_TAG#prod/}
 
           PREVIOUS_TAG=$(
