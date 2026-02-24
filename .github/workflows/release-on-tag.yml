@@ -68,13 +68,13 @@ jobs:
             echo "**Initial Release**" >> release_notes.md
             RANGE="$RAW_TAG"
           else
-            COMMIT_COUNT=$(git rev-list --first-parent --count ${PREVIOUS_TAG}..${RAW_TAG})
+            COMMIT_COUNT=$(git log --first-parent --pretty=tformat:"%s" ${PREVIOUS_TAG}..${RAW_TAG} | grep -vc "^Bump version to ")
             echo "**$COMMIT_COUNT changes** since [$PREVIOUS_TAG](https://github.com/$REPO/releases/tag/$PREVIOUS_TAG)" >> release_notes.md
             echo "" >> release_notes.md
             RANGE="${PREVIOUS_TAG}..${RAW_TAG}"
           fi
 
-          git log $RANGE --first-parent --pretty=tformat:"%s" --reverse | while IFS= read -r msg; do
+          git log $RANGE --first-parent --pretty=tformat:"%s" --reverse | grep -v "^Bump version to " | while IFS= read -r msg; do
             [ -z "$msg" ] && continue
             msg=$(echo "$msg" | sed -E "s|#([0-9]+)|[#\1](https://github.com/$REPO/pull/\1)|g")
             echo "- $msg" >> release_notes.md
