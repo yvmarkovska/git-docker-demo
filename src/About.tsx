@@ -45,6 +45,7 @@ function About() {
 
           <div className={styles.divider}>
             <span className={styles.dividerLeaf}>&#9753;</span>
+            <span className={styles.dividerLeaf}>&#9753;</span>
           </div>
 
           <p className={styles.bio}>
