@@ -1,25 +1,12 @@
-name: production
+name: Build and publish a production container with tag
 
-# Triggered automatically when a prod/vX.X.X tag is pushed (via auto-tag-on-version).
-# Can also be triggered manually to build a specific branch with a custom image tag.
+# Triggered automatically when a prod/vX.X.X tag is pushed (via bump-version.yml).
 # Runs in parallel with release-on-tag.yml after a new version tag is created.
-# To change the default branch for manual builds, update the 'branch' input default below.
 
 on:
   push:
     tags:
       - 'prod/v*'
-  workflow_dispatch:
-    inputs:
-      image_tag:
-        description: 'tag for this image build'
-        required: true
-        default: 'prod'
-      branch:
-        description: 'branch to build'
-        required: false
-        default: 'main'
-        type: string
 
 jobs:
   build:
@@ -30,7 +17,7 @@ jobs:
       - name: Checkout code repository with submodules
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || github.ref }}
+          ref: ${{ github.ref }}
           submodules: true
           fetch-depth: 0
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -49,17 +36,10 @@ jobs:
           password: ${{ secrets.DOCKER_SECRET }}
 
       - name: Get version from tag
-        if: github.event_name == 'push'
         run: |
           VERSION=${GITHUB_REF#refs/tags/prod/v}
           echo "IMAGE_TAG=$VERSION" >> $GITHUB_ENV
           echo "Using version from tag: $VERSION"
-
-      - name: Set image tag from workflow dispatch
-        if: github.event_name == 'workflow_dispatch'
-        run: |
-          echo "IMAGE_TAG=${{ github.event.inputs.image_tag }}" >> $GITHUB_ENV
-          echo "Using provided image tag: ${{ github.event.inputs.image_tag }}"
 
       - name: Build and push with tag
         uses: docker/build-push-action@v6
