@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'prod/v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Existing tag to create release for (e.g. prod/v1.0.17)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -17,11 +23,24 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
+
+      - name: Validate tag exists
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if ! git rev-parse "refs/tags/${{ inputs.tag_name }}" >/dev/null 2>&1; then
+            echo "Error: tag '${{ inputs.tag_name }}' does not exist."
+            exit 1
+          fi
 
       - name: Get current and previous tag
         id: get_tags
         run: |
-          RAW_TAG=${GITHUB_REF#refs/tags/}
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            RAW_TAG="${{ inputs.tag_name }}"
+          else
+            RAW_TAG=${GITHUB_REF#refs/tags/}
+          fi
           CLEAN_TAG=${RAW_TAG#prod/}
 
           PREVIOUS_TAG=$(
