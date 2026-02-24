@@ -1,4 +1,9 @@
-name: Bump Version
+name: Bump Version and Tag
+
+# Bumps the version in package.json, commits, and creates a prod/vX.X.X tag.
+# The tag push automatically triggers:
+#   1. release-on-tag  → generates GitHub Release notes
+#   2. production      → builds and pushes Docker image to ghcr.io
 
 on:
   workflow_dispatch:
@@ -16,13 +21,14 @@ permissions:
   contents: write
 
 jobs:
-  bump-version:
+  bump-and-tag:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           token: ${{ secrets.TOKEN_GITHUB }}
 
       - name: Setup Node.js
@@ -41,8 +47,20 @@ jobs:
           NEW_VERSION=$(node -p "require('./package.json').version")
           echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
 
-      - name: Commit and push
+      - name: Check if tag already exists
         run: |
+          TAG="prod/v${{ env.new_version }}"
+          git fetch --tags
+          if git rev-parse "refs/tags/$TAG" >/dev/null 2>&1; then
+            echo "Error: tag $TAG already exists. Bump the version first."
+            exit 1
+          fi
+
+      - name: Commit, tag and push
+        run: |
+          TAG="prod/v${{ env.new_version }}"
           git add package.json
           git commit -m "Bump version to ${{ env.new_version }}"
-          git push
+          git tag -a "$TAG" -m "Release ${{ env.new_version }}"
+          git push origin HEAD
+          git push origin "$TAG"
