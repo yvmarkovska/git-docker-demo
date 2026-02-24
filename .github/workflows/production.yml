@@ -1,4 +1,4 @@
-name: Build and publish a production container with tag
+name: production
 
 # Triggered automatically when a prod/vX.X.X tag is pushed (via auto-tag-on-version).
 # Can also be triggered manually to build a specific branch with a custom image tag.
