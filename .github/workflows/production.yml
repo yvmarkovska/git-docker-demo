@@ -23,7 +23,7 @@ on:
 
 jobs:
   build:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest  # Change to [self-hosted, linux, x64] for production
     env:
       PILLAR: production
     steps:
